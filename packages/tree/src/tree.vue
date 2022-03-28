@@ -353,6 +353,7 @@
           // setData is required for draggable to work in FireFox
           // the content has to be '' so dragging a node out of the tree won't open a new tab in FireFox
           event.dataTransfer.setData('text/plain', '');
+          console.log('event.dataTransfer:', event.dataTransfer)
         } catch (e) {}
         dragState.draggingNode = treeNode;
         this.$emit('node-drag-start', treeNode.node, event);
@@ -376,7 +377,6 @@
           userAllowDropInner = dropInner = this.allowDrop(draggingNode.node, dropNode.node, 'inner');
           dropNext = this.allowDrop(draggingNode.node, dropNode.node, 'next');
         }
-        event.dataTransfer.dropEffect = dropInner ? 'move' : 'none';
         if ((dropPrev || dropInner || dropNext) && oldDropNode !== dropNode) {
           if (oldDropNode) {
             this.$emit('node-drag-leave', draggingNode.node, oldDropNode.node, event);
@@ -441,6 +441,8 @@
         dragState.showDropIndicator = dropType === 'before' || dropType === 'after';
         dragState.allowDrop = dragState.showDropIndicator || userAllowDropInner;
         dragState.dropType = dropType;
+
+        event.dataTransfer.dropEffect = dragState.allowDrop ? 'move' : 'none';
         this.$emit('node-drag-over', draggingNode.node, dropNode.node, event);
       });
 
